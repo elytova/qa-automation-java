@@ -1,9 +1,9 @@
 import com.tcs.edu.printer.ConsolePrinter;
-import com.tcs.edu.decorator.MessageWithTimeDecorator;
+import com.tcs.edu.decorator.TimestampMessageDecorator;
 
 class Application {
     public static void main(String[] args) {
-        String message = MessageWithTimeDecorator.addTimetoMessage("Hello World!");
+        String message = TimestampMessageDecorator.decorate("Hello World!");
         ConsolePrinter.print(message);
     }
 }
