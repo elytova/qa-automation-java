@@ -2,7 +2,7 @@ package com.tcs.edu.decorator;
 
 import java.time.Instant;
 
-public class MessageWithTimeDecorator {
+public class TimestampMessageDecorator {
 
     /**
      * this class changes an incoming message
@@ -11,7 +11,7 @@ public class MessageWithTimeDecorator {
 
     public static String CurrentTime = Instant.now().toString();
 
-    public static String addTimetoMessage(String message) {
+    public static String decorate(String message) {
         return CurrentTime + ": " + message;
     }
 }
