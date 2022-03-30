@@ -13,6 +13,7 @@ public class TimestampMessageDecorator {
     public static String currentTime = Instant.now().toString();
 
     public static String decorate(String message) {
-        return currentTime + ": " + message;
+        String decoratedMessage = currentTime + ": " + message;
+        return decoratedMessage;
     }
 }
