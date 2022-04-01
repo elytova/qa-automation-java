@@ -14,5 +14,7 @@ public class ConsolePrinter {
 
     public static void print(String message) {
         System.out.println("[" + ++TimestampMessageDecorator.messageCount + "] " + message);
-        }
+        System.out.println("[" + ++TimestampMessageDecorator.messageCount + "] " + message);
+        System.out.println("[" + ++TimestampMessageDecorator.messageCount + "] " + message);
+    }
 }
