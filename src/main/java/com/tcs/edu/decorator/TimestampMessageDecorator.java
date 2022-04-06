@@ -10,9 +10,11 @@ public class TimestampMessageDecorator {
      * this method doesn't have any side effects
      */
 
+    public static Integer messageCount = 0;
     public static String currentTime = Instant.now().toString();
 
     public static String decorate(String message) {
-        return currentTime + ": " + message;
+        final var decoratedMessage = currentTime + ": " + message;
+        return decoratedMessage;
     }
 }
