@@ -1,7 +1,5 @@
 package com.tcs.edu.printer;
 
-import com.tcs.edu.decorator.TimestampMessageDecorator;
-
 public class ConsolePrinter {
 
     /**
@@ -12,9 +10,9 @@ public class ConsolePrinter {
      * @author e.lytova
      */
 
+
+
     public static void print(String message) {
-        System.out.println("[" + ++TimestampMessageDecorator.messageCount + "] " + message);
-        System.out.println("[" + ++TimestampMessageDecorator.messageCount + "] " + message);
-        System.out.println("[" + ++TimestampMessageDecorator.messageCount + "] " + message);
+            System.out.println(message);
     }
 }
