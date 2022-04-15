@@ -4,11 +4,11 @@ import static com.tcs.edu.decorator.Severity.*;
 
 class Application {
     public static void main(String[] args) {
-            ConsolePrinter.print(MINOR, "Hello World!");
-            ConsolePrinter.print(REGULAR, "Hello World!");
-            ConsolePrinter.print(REGULAR, "Hello World!");
-            ConsolePrinter.print(MAJOR, "Hello World!");
-            ConsolePrinter.print(MINOR, "Hello World!");
-            ConsolePrinter.print(MAJOR, "Hello World!");
+            ConsolePrinter.printMessage(MINOR, "Hello World!");
+            ConsolePrinter.printMessage(REGULAR, "Hello World!");
+            ConsolePrinter.printMessage(REGULAR, "Hello World!");
+            ConsolePrinter.printMessage(MAJOR, "Hello World!");
+            ConsolePrinter.printMessage(MINOR, "Hello World!");
+            ConsolePrinter.printMessage(MAJOR, "Hello World!");
     }
 }

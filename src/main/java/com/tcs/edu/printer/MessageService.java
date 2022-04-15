@@ -14,7 +14,7 @@ public class MessageService {
      * this method doesn't have any side effects.
      */
 
-    public static String messageConnector(Severity severity, String message) {
+    public static String print(Severity severity, String message){
         String prefixMessage = decorateWithPage();
         String severityMessage = decorate(severity);
         return String.format(
