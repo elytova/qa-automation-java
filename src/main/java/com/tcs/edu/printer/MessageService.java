@@ -1,7 +1,6 @@
 package com.tcs.edu.printer;
 
 import com.tcs.edu.decorator.Severity;
-
 import static com.tcs.edu.decorator.PageDecorator.*;
 import static com.tcs.edu.decorator.SeverityDecorator.decorate;
 
@@ -11,15 +10,22 @@ public class MessageService {
      * this class forms a final message for printing like a constructor: using message decorators
      * @param severity - severity sent from main class
      * @param message - message sent from main class
-     * this method doesn't have any side effects.
      */
 
-    public static String print(Severity severity, String message){
+    public static void print(Severity severity, String message, String... messages) {
+
         String prefixMessage = decorateWithPage();
         String severityMessage = decorate(severity);
-        return String.format(
+        ConsolePrinter.printMessage(String.format(
                 "[%s] %s %s (%s) %s",
-                messageCount, currentTime, message, severityMessage, prefixMessage
-        );
+                messageCount, currentTime, message, severityMessage, prefixMessage));
+        if (messages.length != 0){
+            for (String s : messages) {
+                String prefixMessage1 = decorateWithPage();
+                ConsolePrinter.printMessage(String.format(
+                        "[%s] %s %s (%s) %s",
+                        messageCount, currentTime, s, severityMessage, prefixMessage1));
+            }
+        }
     }
 }
