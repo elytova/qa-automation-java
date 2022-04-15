@@ -1,13 +1,14 @@
 import com.tcs.edu.printer.ConsolePrinter;
-import com.tcs.edu.decorator.TimestampMessageDecorator;
 
-import static com.tcs.edu.decorator.TimestampMessageDecorator.messageCount;
+import static com.tcs.edu.decorator.Severity.*;
 
 class Application {
     public static void main(String[] args) {
-        for (int i = 0; i < 6; i++) {
-            String message = TimestampMessageDecorator.decorate("Hello World!");
-            ConsolePrinter.print(message);
-        }
+            ConsolePrinter.print(MINOR, "Hello World!");
+            ConsolePrinter.print(REGULAR, "Hello World!");
+            ConsolePrinter.print(REGULAR, "Hello World!");
+            ConsolePrinter.print(MAJOR, "Hello World!");
+            ConsolePrinter.print(MINOR, "Hello World!");
+            ConsolePrinter.print(MAJOR, "Hello World!");
     }
 }
