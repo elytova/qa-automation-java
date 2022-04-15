@@ -1,8 +1,5 @@
 package com.tcs.edu.printer;
 
-import com.tcs.edu.decorator.Severity;
-import static com.tcs.edu.printer.MessageService.print;
-
 public class ConsolePrinter {
 
     /**
@@ -12,8 +9,7 @@ public class ConsolePrinter {
      * @author e.lytova
      */
 
-    public static void printMessage(Severity severity, String message){
-        String finalMessage = print(severity, message);
-        System.out.println(finalMessage);
+    public static void printMessage(String message){
+        System.out.println(message);
     }
 }
