@@ -16,16 +16,16 @@ public class MessageService {
 
         String prefixMessage = decorateWithPage();
         String severityMessage = decorate(severity);
+
+        if (messages.length != 0){
+            for (String s : messages) {
+                ConsolePrinter.printMessage(String.format(
+                        "[%s] %s %s (%s) %s",
+                        messageCount, currentTime, s, severityMessage, prefixMessage));
+            }
+        }
         ConsolePrinter.printMessage(String.format(
                 "[%s] %s %s (%s) %s",
                 messageCount, currentTime, message, severityMessage, prefixMessage));
-        if (messages.length != 0){
-            for (String s : messages) {
-                String prefixMessage1 = decorateWithPage();
-                ConsolePrinter.printMessage(String.format(
-                        "[%s] %s %s (%s) %s",
-                        messageCount, currentTime, s, severityMessage, prefixMessage1));
-            }
-        }
     }
 }
