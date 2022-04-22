@@ -1,4 +1,4 @@
-package com.tcs.edu.printer;
+package com.tcs.edu.enums;
 
 public enum MessageOrder {
     ASC, DESC

@@ -1,7 +1,7 @@
 import com.tcs.edu.printer.MessageService;
 
-import static com.tcs.edu.decorator.Severity.*;
-import static com.tcs.edu.printer.MessageOrder.*;
+import static com.tcs.edu.enums.Severity.*;
+import static com.tcs.edu.enums.MessageOrder.*;
 
 class Application {
     public static void main(String[] args) {

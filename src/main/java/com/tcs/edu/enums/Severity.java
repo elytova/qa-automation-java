@@ -1,4 +1,4 @@
-package com.tcs.edu.decorator;
+package com.tcs.edu.enums;
 
 public enum Severity {
     MINOR, REGULAR, MAJOR
