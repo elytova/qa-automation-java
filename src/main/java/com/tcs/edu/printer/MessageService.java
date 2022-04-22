@@ -1,6 +1,10 @@
 package com.tcs.edu.printer;
 
 import com.tcs.edu.decorator.Severity;
+
+import java.util.Arrays;
+import java.util.Collections;
+
 import static com.tcs.edu.decorator.PageDecorator.*;
 import static com.tcs.edu.decorator.SeverityDecorator.decorate;
 
@@ -11,6 +15,25 @@ public class MessageService {
      * @param severity - severity sent from main class
      * @param message - message sent from main class
      */
+
+    public static void print (Severity severity, MessageOrder order, String message, String... messages) {
+        if (messages != null){
+            if (order == MessageOrder.DESC) {
+                int i = 0;
+                int j = messages.length - 1;
+                String tmp;
+                while (j > i) {
+                    tmp = messages[j];
+                    messages[j] = messages[i];
+                    messages[i] = tmp;
+                    j--;
+                    i++;
+                }
+            }
+        }
+        print(severity, message, messages);
+
+    }
 
     public static void print(Severity severity, String message, String... messages) {
 
