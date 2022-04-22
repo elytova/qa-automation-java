@@ -1,5 +1,7 @@
 package com.tcs.edu.decorator;
 
+import com.tcs.edu.enums.Severity;
+
 public class SeverityDecorator {
 
     /**
