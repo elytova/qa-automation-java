@@ -4,11 +4,11 @@ import com.tcs.edu.enums.Doubling;
 import com.tcs.edu.enums.Severity;
 import com.tcs.edu.enums.MessageOrder;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 import static com.tcs.edu.decorator.PageDecorator.*;
 import static com.tcs.edu.decorator.SeverityDecorator.decorate;
+import static java.util.Arrays.copyOf;
 
 public class MessageService {
 
@@ -55,11 +55,14 @@ public class MessageService {
 
     }
 
+
+
     public static void print(Severity level, MessageOrder order, Doubling doubling, String message, String... messages) {
         if (messages != null && doubling == Doubling.DISTINCT) {
             int messageLength = messages.length;
-            String[] newMessageArray = new String[messageLength];
-            int actualSize = 0;
+            int actualSize = 1;
+            String[] newMessageArray = new String[messageLength+1];
+            newMessageArray[0] = message;
             for (String currentMessage : messages) {
                 boolean exists = false;
                 for (int j = 0; j < actualSize; j++) {
@@ -73,7 +76,7 @@ public class MessageService {
                     actualSize++;
                 }
             }
-            messages = Arrays.copyOf(newMessageArray, actualSize);
+            messages = copyOf(newMessageArray, actualSize);
         }
         print(level, order, message, messages);
     }
