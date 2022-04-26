@@ -60,13 +60,12 @@ public class MessageService {
     public static void print(Severity level, MessageOrder order, Doubling doubling, String message, String... messages) {
         if (messages != null && doubling == Doubling.DISTINCT) {
             int messageLength = messages.length;
-            int actualSize = 1;
+            int actualSize = 0;
             String[] newMessageArray = new String[messageLength+1];
-            newMessageArray[0] = message;
             for (String currentMessage : messages) {
                 boolean exists = false;
                 for (int j = 0; j < actualSize; j++) {
-                    if (Objects.equals(currentMessage, newMessageArray[j])) {
+                    if (Objects.equals(currentMessage, newMessageArray[j]) || Objects.equals(currentMessage, message)){
                         exists = true;
                         break;
                     }
@@ -78,6 +77,7 @@ public class MessageService {
             }
             messages = copyOf(newMessageArray, actualSize);
         }
+
         print(level, order, message, messages);
     }
 }
