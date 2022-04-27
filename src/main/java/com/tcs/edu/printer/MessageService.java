@@ -1,7 +1,7 @@
 package com.tcs.edu.printer;
 
+import com.tcs.edu.domain.Message;
 import com.tcs.edu.enums.Doubling;
-import com.tcs.edu.enums.Severity;
 import com.tcs.edu.enums.MessageOrder;
 
 import java.util.Objects;
@@ -14,70 +14,60 @@ public class MessageService {
 
     /**
      * this class forms a final message for printing like a constructor: using message decorators
+     * overloaded function log() - prints decorated messages
      *
-     * @param level   - severity sent from main class
-     * @param message - message sent from main class
+     * @param message - objects sent from main class. Contains severity level and array of messages
      */
-    public static void print(Severity level, String message, String... messages) {
 
-        String prefixMessage = decorateWithPage();
-        String severityMessage = decorate(level);
-        ConsolePrinter.printMessage(String.format(
-                "[%s] %s %s (%s) %s",
-                messageCount, currentTime, message, severityMessage, prefixMessage));
-
-        if (messages != null) {
-            for (String text : messages) {
+    public static void log(Message message) {
+        if (message.getBody() != null) {
+            String severityMessage = decorate(message.getLevel());
+            for (String text : message.getBody()) {
                 if (text != null) {
-                    String prefixMessage1 = decorateWithPage();
+                    String prefixMessage = decorateWithPage();
                     ConsolePrinter.printMessage(String.format(
                             "[%s] %s %s (%s) %s",
-                            messageCount, currentTime, text, severityMessage, prefixMessage1));
+                            messageCount, currentTime, text, severityMessage, prefixMessage));
                 }
             }
         }
     }
 
-    public static void print(Severity level, MessageOrder order, String message, String... messages) {
-        if (messages != null && order == MessageOrder.DESC) {
+    public static void log(MessageOrder order, Message message) {
+        if (message.getBody() != null && order == MessageOrder.DESC) {
+            String[] newBody = new String[message.getBody().length];
             int i = 0;
-            int j = messages.length - 1;
-            String tmp;
-            while (j > i) {
-                tmp = messages[j];
-                messages[j] = messages[i];
-                messages[i] = tmp;
-                j--;
+            for (int j = message.getBody().length - 1; j >= 0; j--) {
+                newBody[i] = message.getBody()[j];
                 i++;
             }
+            message.setBody(newBody);
         }
-        print(level, message, messages);
-
+        log(message);
     }
 
-
-
-    public static void print(Severity level, MessageOrder order, Doubling doubling, String message, String... messages) {
-        if (messages != null && doubling == Doubling.DISTINCT) {
-            int messageLength = messages.length;
-            int actualSize = 0;
-            String[] newMessageArray = new String[messageLength+1];
-            for (String currentMessage : messages) {
-                boolean exists = false;
-                for (int j = 0; j < actualSize; j++) {
-                    if (Objects.equals(currentMessage, newMessageArray[j]) || Objects.equals(currentMessage, message)){
-                        exists = true;
-                        break;
+    public static void log(MessageOrder order, Doubling doubling, Message message) {
+            if (message.getBody() != null && doubling == Doubling.DISTINCT) {
+                int messageLength = message.getBody().length;
+                int actualSize = 0;
+                String[] newMessageArray = new String[messageLength];
+                for (String currentMessage : message.getBody()) {
+                    boolean exists = false;
+                    for (int j = 0; j < actualSize; j++) {
+                        if (Objects.equals(currentMessage, newMessageArray[j])) {
+                            exists = true;
+                            break;
+                        }
+                    }
+                    if (!exists) {
+                        newMessageArray[actualSize] = currentMessage;
+                        actualSize++;
                     }
                 }
-                if (!exists) {
-                    newMessageArray[actualSize] = currentMessage;
-                    actualSize++;
-                }
+                String[] messagesBody = copyOf(newMessageArray, actualSize);
+                message.setBody(messagesBody);
             }
-            messages = copyOf(newMessageArray, actualSize);
-        }
-
-        print(level, order, message, messages);
+            log(order, message);
     }
+
 }
