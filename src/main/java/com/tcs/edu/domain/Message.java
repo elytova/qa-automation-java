@@ -1,19 +1,32 @@
 package com.tcs.edu.domain;
 
+import com.tcs.edu.enums.Doubling;
+import com.tcs.edu.enums.MessageOrder;
 import com.tcs.edu.enums.Severity;
 
 public class Message {
     private Severity level;
     private String[] body;
+    private MessageOrder order;
+    private Doubling doubling;
 
-    public Message(Severity level, String... body){
+    public Message(MessageOrder order, Doubling doubling, Severity level, String... body){
         if(body == null){System.out.print("Please, add at least one message!\n");}
         this.level = level;
         this.body = body;
+        this.order = order;
+        this.doubling = doubling;
     }
+    public Message(MessageOrder order, Severity level, String... body){
+        this(order, Doubling.DOUBLES, level, body);
+    }
+    public Message(Severity level, String... body){
 
+        this(MessageOrder.ASC, Doubling.DOUBLES, level, body);
+    }
     public Message(String... body){
-        this(Severity.MINOR, body);
+
+        this(MessageOrder.ASC, Doubling.DOUBLES, Severity.MINOR, body);
     }
 
     public Severity getLevel() {
@@ -22,10 +35,8 @@ public class Message {
     public String[] getBody() {
         return body;
     }
-
-    public void setLevel(Severity level) {
-        this.level = level;
-    }
+    public MessageOrder getOrder() { return order; }
+    public Doubling getDoubling() { return doubling; }
 
     public void setBody(String[] body) {
         this.body = body;
