@@ -1,5 +1,5 @@
 package com.tcs.edu.domain;
 
-public interface CallMessageService {
+public interface MessageService {
     void log(Message messageForPrint);
 }

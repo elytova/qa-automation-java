@@ -1,6 +1,6 @@
 package com.tcs.edu.decorator;
 
-import com.tcs.edu.domain.Decorator;
+import com.tcs.edu.domain.MessageDecorator;
 import com.tcs.edu.domain.Message;
 import com.tcs.edu.enums.Doubling;
 import com.tcs.edu.enums.MessageOrder;
@@ -9,7 +9,7 @@ import java.util.Objects;
 
 import static java.util.Arrays.copyOf;
 
-public class OrderedDistinctMessageService implements Decorator {
+public class OrderedDistinctMessageService implements MessageDecorator {
 
 
     /**
