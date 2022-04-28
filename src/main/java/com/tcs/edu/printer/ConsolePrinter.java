@@ -1,6 +1,8 @@
 package com.tcs.edu.printer;
 
-public class ConsolePrinter {
+import com.tcs.edu.domain.Printer;
+
+public class ConsolePrinter implements Printer {
 
     /**
      * this class prints incoming parameters (string) in Console
@@ -9,7 +11,7 @@ public class ConsolePrinter {
      * @author e.lytova
      */
 
-    public static void printMessage(String message){
+    public void printMessage(String message){
         System.out.println(message);
     }
 }

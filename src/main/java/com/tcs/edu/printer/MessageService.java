@@ -1,73 +1,39 @@
 package com.tcs.edu.printer;
 
+import com.tcs.edu.decorator.OrderedDistinctMessageService;
+import com.tcs.edu.decorator.PageDecorator;
+import com.tcs.edu.decorator.SeverityDecorator;
+import com.tcs.edu.domain.CallMessageService;
 import com.tcs.edu.domain.Message;
-import com.tcs.edu.enums.Doubling;
-import com.tcs.edu.enums.MessageOrder;
+import static com.tcs.edu.decorator.PageDecorator.messageCount;
+import static com.tcs.edu.decorator.TimestampMessageDecorator.currentTime;
 
-import java.util.Objects;
-
-import static com.tcs.edu.decorator.PageDecorator.*;
-import static com.tcs.edu.decorator.SeverityDecorator.decorate;
-import static java.util.Arrays.copyOf;
-
-public class MessageService {
+public class MessageService implements CallMessageService {
 
     /**
      * this class forms a final message for printing like a constructor: using message decorators
-     * overloaded function log() - prints decorated messages
-     *
-     * @param message - objects sent from main class. Contains severity level and array of messages
+     * function log() call Decorators and prints decorated messages
      */
 
-    public static void log(Message message) {
+    ConsolePrinter printer = new ConsolePrinter();
+    PageDecorator decorator = new PageDecorator();
+    OrderedDistinctMessageService messageDecorator = new OrderedDistinctMessageService();
+    SeverityDecorator severityDecorator = new SeverityDecorator();
+
+    public void log(Message message) {
+
         if (message.getBody() != null) {
-            String severityMessage = decorate(message.getLevel());
+            messageDecorator.checkForDuplicates(message);
+            messageDecorator.checkForOrder(message);
+            String severityMessage = severityDecorator.decorate(message);
             for (String text : message.getBody()) {
                 if (text != null) {
-                    String prefixMessage = decorateWithPage();
-                    ConsolePrinter.printMessage(String.format(
+                    String prefixMessage = decorator.decorateWithPage();
+                    printer.printMessage(String.format(
                             "[%s] %s %s (%s) %s",
                             messageCount, currentTime, text, severityMessage, prefixMessage));
                 }
             }
         }
     }
-
-    public static void log(MessageOrder order, Message message) {
-        if (message.getBody() != null && order == MessageOrder.DESC) {
-            String[] newBody = new String[message.getBody().length];
-            int i = 0;
-            for (int j = message.getBody().length - 1; j >= 0; j--) {
-                newBody[i] = message.getBody()[j];
-                i++;
-            }
-            message.setBody(newBody);
-        }
-        log(message);
-    }
-
-    public static void log(MessageOrder order, Doubling doubling, Message message) {
-            if (message.getBody() != null && doubling == Doubling.DISTINCT) {
-                int messageLength = message.getBody().length;
-                int actualSize = 0;
-                String[] newMessageArray = new String[messageLength];
-                for (String currentMessage : message.getBody()) {
-                    boolean exists = false;
-                    for (int j = 0; j < actualSize; j++) {
-                        if (Objects.equals(currentMessage, newMessageArray[j])) {
-                            exists = true;
-                            break;
-                        }
-                    }
-                    if (!exists) {
-                        newMessageArray[actualSize] = currentMessage;
-                        actualSize++;
-                    }
-                }
-                String[] messagesBody = copyOf(newMessageArray, actualSize);
-                message.setBody(messagesBody);
-            }
-            log(order, message);
-    }
-
 }
