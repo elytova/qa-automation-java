@@ -1,6 +1,6 @@
 package com.tcs.edu.domain;
 
-public interface Decorator {
+public interface MessageDecorator {
     Message checkForDuplicates(Message messageForPrint);
     Message checkForOrder(Message messageForPrint);
 }
