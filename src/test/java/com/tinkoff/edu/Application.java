@@ -1,8 +1,9 @@
 package com.tinkoff.edu;
 
-import com.tcs.edu.domain.Message;
-import com.tcs.edu.domain.MessageService;
-import com.tcs.edu.printer.OrderedDistinctedMessageService;
+import com.tcs.edu.decorator.*;
+import com.tcs.edu.domain.*;
+import com.tcs.edu.printer.ConsolePrinter;
+import com.tcs.edu.printer.OrderedDistinctMessageService;
 import static com.tcs.edu.enums.Severity.*;
 import static com.tcs.edu.enums.MessageOrder.*;
 import static com.tcs.edu.enums.Doubling.*;
@@ -15,7 +16,13 @@ class Application {
         Message message4 = new Message(MAJOR, "Hello World!");
         Message message5 = new Message("Hello World!");
 
-        MessageService service = new OrderedDistinctedMessageService();
+        MessageService service = new OrderedDistinctMessageService(
+                new PageDecorator(),
+                new DuplicatesDecorator(),
+                new OrderDecorator(),
+                new ConsolePrinter(),
+                new SeverityDecorator()
+        );
         service.log(message1);
         service.log(message2);
         service.log(message3);

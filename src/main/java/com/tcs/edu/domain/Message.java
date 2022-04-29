@@ -20,12 +20,12 @@ public class Message {
     public Message(MessageOrder order, Severity level, String... body){
         this(order, Doubling.DOUBLES, level, body);
     }
-    public Message(Severity level, String... body){
 
+    public Message(Severity level, String... body){
         this(MessageOrder.ASC, Doubling.DOUBLES, level, body);
     }
+    
     public Message(String... body){
-
         this(MessageOrder.ASC, Doubling.DOUBLES, Severity.MINOR, body);
     }
 
