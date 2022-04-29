@@ -1,7 +1,7 @@
 package com.tcs.edu.decorator;
 
-import com.tcs.edu.domain.MessageDecorator;
 import com.tcs.edu.domain.Message;
+import com.tcs.edu.domain.MessageDecorator;
 import com.tcs.edu.enums.Doubling;
 import com.tcs.edu.enums.MessageOrder;
 
@@ -9,7 +9,7 @@ import java.util.Objects;
 
 import static java.util.Arrays.copyOf;
 
-public class OutputOderDecorator implements MessageDecorator {
+public class DuplicatesDecorator implements MessageDecorator {
 
 
     /**
@@ -17,7 +17,7 @@ public class OutputOderDecorator implements MessageDecorator {
      * no any side effect on a global variables
      */
     @Override
-    public Message checkForDuplicates(Message message) {
+    public Message decorate(Message message) {
         if (message.getDoubling() == Doubling.DISTINCT) {
             int messageLength = message.getBody().length;
             int actualSize = 0;
@@ -37,19 +37,6 @@ public class OutputOderDecorator implements MessageDecorator {
             }
             String[] messagesBody = copyOf(newMessageArray, actualSize);
             message.setBody(messagesBody);
-        }
-        return message;
-    }
-
-    public Message checkForOrder(Message message) {
-        if (message.getOrder() == MessageOrder.DESC) {
-            String[] newBody = new String[message.getBody().length];
-            int i = 0;
-            for (int j = message.getBody().length - 1; j >= 0; j--) {
-                newBody[i] = message.getBody()[j];
-                i++;
-            }
-            message.setBody(newBody);
         }
         return message;
     }
