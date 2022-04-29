@@ -14,10 +14,10 @@ public class MessageService implements com.tcs.edu.domain.MessageService {
      * function log() call Decorators and prints decorated messages
      */
 
-    ConsolePrinter printer = new ConsolePrinter();
-    PageDecorator decorator = new PageDecorator();
-    OrderedDistinctMessageService messageDecorator = new OrderedDistinctMessageService();
-    SeverityDecorator severityDecorator = new SeverityDecorator();
+    private ConsolePrinter printer = new ConsolePrinter();
+    private PageDecorator decorator = new PageDecorator();
+    private OrderedDistinctMessageService messageDecorator = new OrderedDistinctMessageService();
+    private SeverityDecorator severityDecorator = new SeverityDecorator();
 
     public void log(Message message) {
 
