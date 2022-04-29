@@ -9,7 +9,7 @@ import java.util.Objects;
 
 import static java.util.Arrays.copyOf;
 
-public class OrderedDistinctMessageService implements MessageDecorator {
+public class OutputOderDecorator implements MessageDecorator {
 
 
     /**

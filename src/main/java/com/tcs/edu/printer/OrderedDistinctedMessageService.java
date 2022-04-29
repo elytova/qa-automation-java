@@ -1,13 +1,15 @@
 package com.tcs.edu.printer;
 
-import com.tcs.edu.decorator.OrderedDistinctMessageService;
+import com.tcs.edu.decorator.OutputOderDecorator;
 import com.tcs.edu.decorator.PageDecorator;
 import com.tcs.edu.decorator.SeverityDecorator;
 import com.tcs.edu.domain.Message;
+import com.tcs.edu.domain.MessageService;
+
 import static com.tcs.edu.decorator.PageDecorator.messageCount;
 import static com.tcs.edu.decorator.TimestampMessageDecorator.currentTime;
 
-public class MessageService implements com.tcs.edu.domain.MessageService {
+public class OrderedDistinctedMessageService implements MessageService {
 
     /**
      * this class forms a final message for printing like a constructor: using message decorators
@@ -16,7 +18,7 @@ public class MessageService implements com.tcs.edu.domain.MessageService {
 
     private ConsolePrinter printer = new ConsolePrinter();
     private PageDecorator decorator = new PageDecorator();
-    private OrderedDistinctMessageService messageDecorator = new OrderedDistinctMessageService();
+    private OutputOderDecorator messageDecorator = new OutputOderDecorator();
     private SeverityDecorator severityDecorator = new SeverityDecorator();
 
     public void log(Message message) {
