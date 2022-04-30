@@ -9,7 +9,7 @@ import com.tcs.edu.domain.Printer;
 import static com.tcs.edu.decorator.PageDecorator.messageCount;
 import static com.tcs.edu.decorator.TimestampMessageDecorator.currentTime;
 
-public class OrderedDistinctMessageService implements MessageService, MessageDecorator, Printer {
+public class OrderedDistinctMessageService implements MessageService {
 
     /**
      * this class forms a final message for printing like a constructor: using message decorators
@@ -35,29 +35,32 @@ public class OrderedDistinctMessageService implements MessageService, MessageDec
     private final SeverityDecorator severityDecorator;
 
     public void log(Message message) {
+        String severityMessage = "";
 
         if (message.getBody() != null) {
-            duplicatesDecorator.decorate(message);
-            orderDecorator.decorate(message);
-            String severityMessage = severityDecorator.decorate(message);
-            for (String text : message.getBody()) {
-                if (text != null) {
-                    String prefixMessage = pageDecorator.decorateWithPage();
-                    consolePrinter.printMessage(String.format(
-                            "[%s] %s %s (%s) %s",
-                            messageCount, currentTime, text, severityMessage, prefixMessage));
+            if(duplicatesDecorator != null){
+                duplicatesDecorator.decorate(message);
+            }
+
+            if(orderDecorator != null){
+                orderDecorator.decorate(message);
+            }
+
+            if(severityDecorator != null){
+                severityMessage = severityDecorator.decorate(message);
+            }
+
+            if(consolePrinter != null) {
+                for (String text : message.getBody()) {
+                    if (text != null) {
+                        String prefixMessage = pageDecorator.decorateWithPage();
+                        consolePrinter.printMessage(String.format(
+                                "[%s] %s %s (%s) %s",
+                                messageCount, currentTime, text, severityMessage, prefixMessage));
+                    }
                 }
             }
         }
     }
 
-    @Override
-    public Message decorate(Message messageForPrint) {
-        return null;
-    }
-
-    @Override
-    public void printMessage(String message) {
-
-    }
 }
