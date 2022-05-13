@@ -3,15 +3,16 @@ package com.tcs.edu.domain;
 import com.tcs.edu.enums.Doubling;
 import com.tcs.edu.enums.MessageOrder;
 import com.tcs.edu.enums.Severity;
+import com.tcs.edu.validator.ValidatedService;
 
-public class Message {
+public class Message extends ValidatedService {
     private Severity level;
     private String[] body;
     private MessageOrder order;
     private Doubling doubling;
 
     public Message(MessageOrder order, Doubling doubling, Severity level, String... body){
-        if(body == null){System.out.print("Please, add at least one message!\n");}
+        if(!super.isArgsValid(body)){System.out.print("Please, add at least one message!\n");}
         this.level = level;
         this.body = body;
         this.order = order;
