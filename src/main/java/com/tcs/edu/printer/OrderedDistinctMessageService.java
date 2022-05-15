@@ -2,9 +2,7 @@ package com.tcs.edu.printer;
 
 import com.tcs.edu.decorator.*;
 import com.tcs.edu.domain.Message;
-import com.tcs.edu.domain.MessageDecorator;
 import com.tcs.edu.domain.MessageService;
-import com.tcs.edu.domain.Printer;
 
 import static com.tcs.edu.decorator.PageDecorator.messageCount;
 import static com.tcs.edu.decorator.TimestampMessageDecorator.currentTime;
