@@ -3,14 +3,9 @@ package com.tcs.edu.decorator;
 import com.tcs.edu.domain.Message;
 import com.tcs.edu.domain.MessageDecorator;
 import com.tcs.edu.enums.Doubling;
-import com.tcs.edu.enums.MessageOrder;
-
-import java.util.Objects;
-
 import static java.util.Arrays.copyOf;
 
 public class DuplicatesDecorator implements MessageDecorator {
-
 
     /**
      * this class decorates messages based on incoming DOUBLING and MESSAGEORDER enums
@@ -25,7 +20,9 @@ public class DuplicatesDecorator implements MessageDecorator {
             for (String currentMessage : message.getBody()) {
                 boolean exists = false;
                 for (int j = 0; j < actualSize; j++) {
-                    if (Objects.equals(currentMessage, newMessageArray[j])) {
+                    if (currentMessage.equals(newMessageArray[j])
+                            || currentMessage.hashCode() == newMessageArray[j].hashCode()
+                    ) {
                         exists = true;
                         break;
                     }
