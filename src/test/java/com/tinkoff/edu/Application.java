@@ -20,8 +20,8 @@ class Application {
         );
         service.log(new Message(DESC, DISTINCT, MINOR,"Hello World!", "22","22","33", "Hello World!"));
         service.log(new Message(ASC, DOUBLES, REGULAR, "Hello World!", "444", "555","555"));
-        service.log(new Message(ASC, REGULAR, "Hello World!"));
-        service.log(new Message(MAJOR, "Hello World!"));
-        service.log(new Message(null));
+        service.log(new Message(ASC, REGULAR, "Hello World!!"));
+        service.log(new Message(DESC,null));
+        service.log(new Message(DESC));
     }
 }
