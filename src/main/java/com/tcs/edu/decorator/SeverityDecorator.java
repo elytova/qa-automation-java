@@ -1,8 +1,12 @@
 package com.tcs.edu.decorator;
 
+import com.tcs.edu.domain.LogException;
 import com.tcs.edu.domain.Message;
+import com.tcs.edu.validator.ValidatedService;
 
-public class SeverityDecorator {
+import static com.tcs.edu.domain.LogException.NOT_VALID_ARG_MESSAGE;
+
+public class SeverityDecorator extends ValidatedService {
 
     /**
      * this class indicates what text is equals to incoming severity
@@ -12,6 +16,12 @@ public class SeverityDecorator {
      */
 
     public String decorate(Message message){
+        try {
+            super.isArgsValid(message);
+        } catch (IllegalArgumentException e) {
+            throw new LogException(NOT_VALID_ARG_MESSAGE, e);
+        }
+
         String severityString = null;
         switch (message.getLevel()){
             case MINOR: severityString = ""; break;
