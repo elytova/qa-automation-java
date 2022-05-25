@@ -10,11 +10,6 @@ import static com.tcs.edu.enums.Doubling.*;
 
 class Application {
     public static void main(String[] args) {
-        Message message1 = new Message(DESC, DISTINCT, MINOR,"Hello World!", "22","22","33", "Hello World!");
-        Message message2 = new Message(ASC, DOUBLES, REGULAR, "Hello World!", "444", "555","555");
-        Message message3 = new Message(ASC, REGULAR, "Hello World!");
-        Message message4 = new Message(MAJOR, "Hello World!");
-        Message message5 = new Message("Hello World!");
 
         MessageService service = new OrderedDistinctMessageService(
                 new PageDecorator(),
@@ -23,10 +18,10 @@ class Application {
                 new ConsolePrinter(),
                 new SeverityDecorator()
         );
-        service.log(message1);
-        service.log(message2);
-        service.log(message3);
-        service.log(message4);
-        service.log(message5);
+        service.log(new Message(DESC, DISTINCT, MINOR,"Hello World!", "22","22","33", "Hello World!"));
+        service.log(new Message(ASC, DOUBLES, REGULAR, "Hello World!", "444", "555","555"));
+        service.log(new Message(ASC, REGULAR, "Hello World!!"));
+        service.log(new Message(DESC,null));
+        service.log(new Message(DESC));
     }
 }

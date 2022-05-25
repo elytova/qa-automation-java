@@ -1,20 +1,22 @@
 package com.tcs.edu.printer;
 
+import com.tcs.edu.domain.LogException;
 import com.tcs.edu.decorator.*;
 import com.tcs.edu.domain.Message;
-import com.tcs.edu.domain.MessageDecorator;
 import com.tcs.edu.domain.MessageService;
-import com.tcs.edu.domain.Printer;
+import com.tcs.edu.validator.ValidatedService;
 
 import static com.tcs.edu.decorator.PageDecorator.messageCount;
 import static com.tcs.edu.decorator.TimestampMessageDecorator.currentTime;
+import static com.tcs.edu.domain.LogException.NOT_VALID_ARG_MESSAGE;
 
-public class OrderedDistinctMessageService implements MessageService {
+public class OrderedDistinctMessageService extends ValidatedService implements MessageService {
 
     /**
      * this class forms a final message for printing like a constructor: using message decorators
      * function log() call Decorators and prints decorated messages
      */
+
     public OrderedDistinctMessageService(
             PageDecorator pageDecorator,
             DuplicatesDecorator duplicatesDecorator,
@@ -36,21 +38,25 @@ public class OrderedDistinctMessageService implements MessageService {
 
     public void log(Message message) {
         String severityMessage = "";
+        try {
+            super.isArgsValid(message);
+        } catch (IllegalArgumentException e) {
+            throw new LogException(NOT_VALID_ARG_MESSAGE, e);
+        }
 
-        if (message.getBody() != null) {
-            if(duplicatesDecorator != null){
+            if (duplicatesDecorator != null) {
                 duplicatesDecorator.decorate(message);
             }
 
-            if(orderDecorator != null){
+            if (orderDecorator != null) {
                 orderDecorator.decorate(message);
             }
 
-            if(severityDecorator != null){
+            if (severityDecorator != null) {
                 severityMessage = severityDecorator.decorate(message);
             }
 
-            if(consolePrinter != null) {
+            if (consolePrinter != null) {
                 for (String text : message.getBody()) {
                     if (text != null) {
                         String prefixMessage = pageDecorator.decorateWithPage();
@@ -61,6 +67,4 @@ public class OrderedDistinctMessageService implements MessageService {
                 }
             }
         }
-    }
-
 }

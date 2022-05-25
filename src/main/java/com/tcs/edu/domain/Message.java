@@ -4,14 +4,15 @@ import com.tcs.edu.enums.Doubling;
 import com.tcs.edu.enums.MessageOrder;
 import com.tcs.edu.enums.Severity;
 
-public class Message {
+import java.util.Arrays;
+
+public class Message{
     private Severity level;
     private String[] body;
     private MessageOrder order;
     private Doubling doubling;
 
     public Message(MessageOrder order, Doubling doubling, Severity level, String... body){
-        if(body == null){System.out.print("Please, add at least one message!\n");}
         this.level = level;
         this.body = body;
         this.order = order;
@@ -19,6 +20,10 @@ public class Message {
     }
     public Message(MessageOrder order, Severity level, String... body){
         this(order, Doubling.DOUBLES, level, body);
+    }
+
+    public Message(MessageOrder order, String... body){
+        this(order, Doubling.DOUBLES, Severity.MINOR, body);
     }
 
     public Message(Severity level, String... body){
@@ -40,5 +45,25 @@ public class Message {
 
     public void setBody(String[] body) {
         this.body = body;
+    }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "body=" + Arrays.toString(body) +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Message)) return false;
+        Message message = (Message) o;
+        return Arrays.equals(getBody(), message.getBody());
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(getBody());
     }
 }
