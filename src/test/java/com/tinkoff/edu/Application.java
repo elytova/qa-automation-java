@@ -15,8 +15,8 @@ class Application {
                 new PageDecorator(),
                 new DuplicatesDecorator(),
                 new OrderDecorator(),
-                new ConsolePrinter(),
-                new SeverityDecorator()
+                new SeverityDecorator(),
+                new ConsolePrinter()
         );
         service.log(new Message(DESC, DISTINCT, MINOR,"Hello World!", "22","22","33", "Hello World!"));
         service.log(new Message(ASC, DOUBLES, REGULAR, "Hello World!", "444", "555","555"));
