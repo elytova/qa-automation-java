@@ -5,18 +5,21 @@ import com.tcs.edu.enums.MessageOrder;
 import com.tcs.edu.enums.Severity;
 
 import java.util.Arrays;
+import java.util.UUID;
 
 public class Message{
     private Severity level;
     private String[] body;
     private MessageOrder order;
     private Doubling doubling;
+    private UUID id;
 
     public Message(MessageOrder order, Doubling doubling, Severity level, String... body){
         this.level = level;
         this.body = body;
         this.order = order;
         this.doubling = doubling;
+        this.id = id;
     }
     public Message(MessageOrder order, Severity level, String... body){
         this(order, Doubling.DOUBLES, level, body);
@@ -46,6 +49,10 @@ public class Message{
     public void setBody(String[] body) {
         this.body = body;
     }
+
+    public UUID getId() {return id;}
+
+    public void setId(UUID id) {this.id = id;}
 
     @Override
     public String toString() {

@@ -1,10 +1,10 @@
 package com.tcs.edu.printer;
 
-import com.tcs.edu.domain.LogException;
+import com.tcs.edu.domain.*;
 import com.tcs.edu.decorator.*;
-import com.tcs.edu.domain.Message;
-import com.tcs.edu.domain.MessageService;
 import com.tcs.edu.validator.ValidatedService;
+
+import java.util.UUID;
 
 import static com.tcs.edu.decorator.PageDecorator.messageCount;
 import static com.tcs.edu.decorator.TimestampMessageDecorator.currentTime;
@@ -21,20 +21,21 @@ public class OrderedDistinctMessageService extends ValidatedService implements M
             PageDecorator pageDecorator,
             DuplicatesDecorator duplicatesDecorator,
             OrderDecorator orderDecorator,
-            ConsolePrinter consolePrinter,
-            SeverityDecorator severityDecorator) {
+            SeverityDecorator severityDecorator,
+            ConsolePrinter consolePrinter) {
         this.pageDecorator = pageDecorator;
         this.duplicatesDecorator = duplicatesDecorator;
         this.orderDecorator = orderDecorator;
-        this.consolePrinter = consolePrinter;
         this.severityDecorator = severityDecorator;
+        this.consolePrinter = consolePrinter;
     }
 
-    private final ConsolePrinter consolePrinter;
     private final PageDecorator pageDecorator;
     private final DuplicatesDecorator duplicatesDecorator;
     private final OrderDecorator orderDecorator;
     private final SeverityDecorator severityDecorator;
+    private final ConsolePrinter consolePrinter;
+    private MessageRepository messageRepository = new HashMapMessageRepository();
 
     public void log(Message message) {
         String severityMessage = "";
@@ -60,10 +61,14 @@ public class OrderedDistinctMessageService extends ValidatedService implements M
                 for (String text : message.getBody()) {
                     if (text != null) {
                         String prefixMessage = pageDecorator.decorateWithPage();
-                        consolePrinter.printMessage(String.format(
+                        String messageForPrint = String.format(
                                 "[%s] %s %s (%s) %s",
-                                messageCount, currentTime, text, severityMessage, prefixMessage));
+                                messageCount, currentTime, text, severityMessage, prefixMessage);
+                        final UUID primaryKey = messageRepository.create(messageForPrint);
+                        message.setId(primaryKey);
+                        System.out.println(primaryKey + "===" + (messageRepository.findByPrimaryKey(primaryKey)));
                     }
+
                 }
             }
         }
