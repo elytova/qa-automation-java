@@ -2,6 +2,7 @@ package com.tcs.edu.printer;
 
 import com.tcs.edu.domain.*;
 import com.tcs.edu.decorator.*;
+import com.tcs.edu.enums.Severity;
 import com.tcs.edu.validator.ValidatedService;
 
 import java.util.Collection;
@@ -86,5 +87,10 @@ public class OrderedDistinctMessageService extends ValidatedService implements M
     @Override
     public Collection<Message> findAll() {
         return messageRepository.findAll();
+    }
+
+    @Override
+    public Collection<Message> findBySeverity(Severity by) {
+        return messageRepository.findBySeverity(by);
     }
 }
