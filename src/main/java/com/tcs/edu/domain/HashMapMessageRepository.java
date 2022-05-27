@@ -4,16 +4,16 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class HashMapMessageRepository implements MessageRepository {
-    private final HashMap<UUID, String> messages = new HashMap<>();
+    private final HashMap<UUID, Message> messages = new HashMap<>();
 
     @Override
-    public UUID create(String messageForPrint) {
+    public UUID create(Message message) {
         UUID primaryKey = UUID.randomUUID();
-        messages.put(primaryKey,messageForPrint);
+        messages.put(primaryKey,message);
         return primaryKey;
     }
 
-    public Object findByPrimaryKey(UUID primaryKey){
+    public Message findByPrimaryKey(UUID primaryKey){
         return messages.get(primaryKey);
     }
 }

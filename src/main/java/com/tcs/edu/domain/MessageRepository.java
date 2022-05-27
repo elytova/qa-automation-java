@@ -3,7 +3,7 @@ package com.tcs.edu.domain;
 import java.util.UUID;
 
 public interface MessageRepository {
-    UUID create(String messageForPrint);
+    UUID create(Message message);
 
-    Object findByPrimaryKey(UUID primaryKey);
+    Message findByPrimaryKey(UUID primaryKey);
 }

@@ -35,9 +35,9 @@ public class OrderedDistinctMessageService extends ValidatedService implements M
     private final OrderDecorator orderDecorator;
     private final SeverityDecorator severityDecorator;
     private final ConsolePrinter consolePrinter;
-    private MessageRepository messageRepository = new HashMapMessageRepository();
+    MessageRepository messageRepository = new HashMapMessageRepository();
 
-    public void log(Message message) {
+    public Message log(Message message) {
         String severityMessage = "";
         try {
             super.isArgsValid(message);
@@ -58,18 +58,27 @@ public class OrderedDistinctMessageService extends ValidatedService implements M
             }
 
             if (consolePrinter != null) {
-                for (String text : message.getBody()) {
-                    if (text != null) {
+                String[] decoratedMessageArray = new String[message.getBody().length];
+                for(int i = 0; i < message.getBody().length; i ++){
+//                for (String text : message.getBody()) {
+                    if (message.getBody()[i] != null) {
                         String prefixMessage = pageDecorator.decorateWithPage();
-                        String messageForPrint = String.format(
+                        String finalDecoratedMessage = String.format(
                                 "[%s] %s %s (%s) %s",
-                                messageCount, currentTime, text, severityMessage, prefixMessage);
-                        final UUID primaryKey = messageRepository.create(messageForPrint);
-                        message.setId(primaryKey);
-                        System.out.println(primaryKey + "===" + (messageRepository.findByPrimaryKey(primaryKey)));
-                    }
+                                messageCount, currentTime, message.getBody()[i], severityMessage, prefixMessage);
 
+                        decoratedMessageArray[i] = finalDecoratedMessage;
+                    }
                 }
+                message.setBody(decoratedMessageArray);
+                final UUID primaryKey = messageRepository.create(message);
+                message.setId(primaryKey);
             }
+            return message;
         }
+
+    @Override
+    public Message findByPrimaryKey(UUID key) {
+        return messageRepository.findByPrimaryKey(key);
+    }
 }
