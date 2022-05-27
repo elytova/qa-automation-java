@@ -1,4 +1,8 @@
 package com.tcs.edu.domain;
+
+import java.util.UUID;
+
 public interface MessageService{
-    void log(Message messageForPrint);
+    Message log(Message messageForPrint);
+    Message findByPrimaryKey(UUID key);
 }
