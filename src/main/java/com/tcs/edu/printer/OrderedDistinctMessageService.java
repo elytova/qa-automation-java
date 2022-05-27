@@ -4,6 +4,7 @@ import com.tcs.edu.domain.*;
 import com.tcs.edu.decorator.*;
 import com.tcs.edu.validator.ValidatedService;
 
+import java.util.Collection;
 import java.util.UUID;
 
 import static com.tcs.edu.decorator.PageDecorator.messageCount;
@@ -80,5 +81,10 @@ public class OrderedDistinctMessageService extends ValidatedService implements M
     @Override
     public Message findByPrimaryKey(UUID key) {
         return messageRepository.findByPrimaryKey(key);
+    }
+
+    @Override
+    public Collection<Message> findAll() {
+        return messageRepository.findAll();
     }
 }

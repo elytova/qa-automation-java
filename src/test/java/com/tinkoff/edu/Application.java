@@ -27,7 +27,10 @@ class Application {
 
 
         service.findByPrimaryKey(message3.getId());
-        System.out.println("Primary key: " + message3.getId() + "\nMessage: " + service.findByPrimaryKey(message3.getId()));
+        service.findAll();
 
+        System.out.println("Primary key: " + message3.getId() + "\nMessage: " + service.findByPrimaryKey(message3.getId()));
+        System.out.println("===============");
+        System.out.println(service.findAll());
     }
 }
