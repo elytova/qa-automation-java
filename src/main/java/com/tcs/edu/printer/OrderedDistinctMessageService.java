@@ -1,10 +1,12 @@
 package com.tcs.edu.printer;
 
-import com.tcs.edu.domain.LogException;
+import com.tcs.edu.domain.*;
 import com.tcs.edu.decorator.*;
-import com.tcs.edu.domain.Message;
-import com.tcs.edu.domain.MessageService;
+import com.tcs.edu.enums.Severity;
 import com.tcs.edu.validator.ValidatedService;
+
+import java.util.Collection;
+import java.util.UUID;
 
 import static com.tcs.edu.decorator.PageDecorator.messageCount;
 import static com.tcs.edu.decorator.TimestampMessageDecorator.currentTime;
@@ -21,22 +23,23 @@ public class OrderedDistinctMessageService extends ValidatedService implements M
             PageDecorator pageDecorator,
             DuplicatesDecorator duplicatesDecorator,
             OrderDecorator orderDecorator,
-            ConsolePrinter consolePrinter,
-            SeverityDecorator severityDecorator) {
+            SeverityDecorator severityDecorator,
+            ConsolePrinter consolePrinter) {
         this.pageDecorator = pageDecorator;
         this.duplicatesDecorator = duplicatesDecorator;
         this.orderDecorator = orderDecorator;
-        this.consolePrinter = consolePrinter;
         this.severityDecorator = severityDecorator;
+        this.consolePrinter = consolePrinter;
     }
 
-    private final ConsolePrinter consolePrinter;
     private final PageDecorator pageDecorator;
     private final DuplicatesDecorator duplicatesDecorator;
     private final OrderDecorator orderDecorator;
     private final SeverityDecorator severityDecorator;
+    private final ConsolePrinter consolePrinter;
+    MessageRepository messageRepository = new HashMapMessageRepository();
 
-    public void log(Message message) {
+    public Message log(Message message) {
         String severityMessage = "";
         try {
             super.isArgsValid(message);
@@ -57,14 +60,37 @@ public class OrderedDistinctMessageService extends ValidatedService implements M
             }
 
             if (consolePrinter != null) {
-                for (String text : message.getBody()) {
-                    if (text != null) {
+                String[] decoratedMessageArray = new String[message.getBody().length];
+                for(int i = 0; i < message.getBody().length; i ++){
+//                for (String text : message.getBody()) {
+                    if (message.getBody()[i] != null) {
                         String prefixMessage = pageDecorator.decorateWithPage();
-                        consolePrinter.printMessage(String.format(
+                        String finalDecoratedMessage = String.format(
                                 "[%s] %s %s (%s) %s",
-                                messageCount, currentTime, text, severityMessage, prefixMessage));
+                                messageCount, currentTime, message.getBody()[i], severityMessage, prefixMessage);
+
+                        decoratedMessageArray[i] = finalDecoratedMessage;
                     }
                 }
+                message.setBody(decoratedMessageArray);
+                final UUID primaryKey = messageRepository.create(message);
+                message.setId(primaryKey);
             }
+            return message;
         }
+
+    @Override
+    public Message findByPrimaryKey(UUID key) {
+        return messageRepository.findByPrimaryKey(key);
+    }
+
+    @Override
+    public Collection<Message> findAll() {
+        return messageRepository.findAll();
+    }
+
+    @Override
+    public Collection<Message> findBySeverity(Severity by) {
+        return messageRepository.findBySeverity(by);
+    }
 }
