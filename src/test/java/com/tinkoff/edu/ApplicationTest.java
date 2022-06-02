@@ -5,7 +5,6 @@ import com.tcs.edu.domain.*;
 import com.tcs.edu.enums.Severity;
 import com.tcs.edu.printer.ConsolePrinter;
 import com.tcs.edu.printer.OrderedDistinctMessageService;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -13,6 +12,8 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 import static com.tcs.edu.enums.MessageOrder.*;
 import static com.tcs.edu.enums.Doubling.*;
+import static org.assertj.core.api.Assertions.*;
+
 
 public class ApplicationTest {
 
@@ -32,8 +33,7 @@ public class ApplicationTest {
         //When
         service.log(testMessage);
         //Then
-        Assertions.assertEquals("[Message{body=[Hello World! (), 444 (), 555 (), 555 ()]}]",
-                                    service.findAll().toString());
+        assertThat(service.findAll().toString()).isEqualTo("[Message{body=[Hello World! (), 444 (), 555 (), 555 ()]}]");
     }
 
     @Test
@@ -41,8 +41,7 @@ public class ApplicationTest {
     public void ShouldSaveMessageInDescOrder(){
         Message testMessage = new Message(DESC, DISTINCT,"Hello World!", "22","22","33", "Hello World!");
         service.log(testMessage);
-        Assertions.assertEquals("[Message{body=[Hello World! (), 33 (), 22 ()]}]",
-                service.findAll().toString());
+        assertThat(service.findAll().toString()).isEqualTo("[Message{body=[Hello World! (), 33 (), 22 ()]}]");
     }
 
     @Test
@@ -50,8 +49,7 @@ public class ApplicationTest {
     public void ShouldSaveMessageWithoutDuplicates(){
         Message testMessage = new Message(ASC, DISTINCT, "Hello World!", "444", "555", "555");
         service.log(testMessage);
-        Assertions.assertEquals("[Message{body=[Hello World! (), 444 (), 555 ()]}]",
-                service.findAll().toString());
+        assertThat(service.findAll().toString()).isEqualTo("[Message{body=[Hello World! (), 444 (), 555 ()]}]");
     }
 
     @DisplayName("Проверка сохранения сообщения в зависимости от severity")
@@ -61,27 +59,40 @@ public class ApplicationTest {
         String expectedMessage = "";
         Message testMessage = new Message(ASC, severity,"Hello World!", "22","22","33", "Hello World!");
         switch (severity){
-            case MINOR: expectedMessage = "[Message{body=[Hello World! (), 22 (), 22 (), 33 (), Hello World! ()]}]"; break;
-            case REGULAR: expectedMessage = "[Message{body=[Hello World! (!), 22 (!), 22 (!), 33 (!), Hello World! (!)]}]"; break;
-            case MAJOR: expectedMessage = "[Message{body=[Hello World! (!!!), 22 (!!!), 22 (!!!), 33 (!!!), Hello World! (!!!)]}]"; break;
+            case MINOR:
+                expectedMessage = "[Message{body=[Hello World! (), 22 (), 22 (), 33 (), Hello World! ()]}]";
+                break;
+            case REGULAR:
+                expectedMessage = "[Message{body=[Hello World! (!), 22 (!), 22 (!), 33 (!), Hello World! (!)]}]";
+                break;
+            case MAJOR:
+                expectedMessage = "[Message{body=[Hello World! (!!!), 22 (!!!), 22 (!!!), 33 (!!!), Hello World! (!!!)]}]";
+                break;
         }
 
         service.log(testMessage);
-        Assertions.assertEquals(expectedMessage, service.findBySeverity(severity)
-                .stream().findFirst().toString().replaceAll("Optional", ""));
+        assertThat(service.findBySeverity(severity)
+                .stream().findFirst().toString().replaceAll("Optional", ""))
+                .isEqualTo(expectedMessage);
     }
 
     @Test
     @DisplayName("Проверка выбрасывания Exception: null сообщение")
     public void ShouldReturnExceptionWhenNullBody() {
         Message testMessage = new Message(DESC, null);
-        Assertions.assertThrows(LogException.class, () -> service.log(testMessage));
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> service.log(testMessage))
+                .havingRootCause()
+                .withMessage("body is null");
     }
 
     @Test
     @DisplayName("Проверка выбрасывания Exception: empty сообщение")
     public void ShouldReturnExceptionWhenBodyMissing(){
         Message testMessage = new Message(DESC);
-        Assertions.assertThrows(LogException.class, () -> service.log(testMessage));
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> service.log(testMessage))
+                .havingRootCause()
+                .withMessage("body is empty");
     }
 }
