@@ -39,6 +39,9 @@ public class Message{
     public Message(MessageOrder order, Doubling doubling, String... body) { this(order, doubling, Severity.MINOR, body);
     }
 
+    public Message(Doubling doubling, String... body) { this(MessageOrder.ASC, doubling, Severity.MINOR, body);
+    }
+
     public Severity getLevel() {
         return level;
     }
