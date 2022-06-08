@@ -21,20 +21,20 @@ public class OrderedDistinctMessageService extends ValidatedService implements M
 
     public OrderedDistinctMessageService(
             PageDecorator pageDecorator,
-            DuplicatesDecorator duplicatesDecorator,
             OrderDecorator orderDecorator,
+            DuplicatesDecorator duplicatesDecorator,
             SeverityDecorator severityDecorator,
             ConsolePrinter consolePrinter) {
         this.pageDecorator = pageDecorator;
-        this.duplicatesDecorator = duplicatesDecorator;
         this.orderDecorator = orderDecorator;
+        this.duplicatesDecorator = duplicatesDecorator;
         this.severityDecorator = severityDecorator;
         this.consolePrinter = consolePrinter;
     }
 
     private final PageDecorator pageDecorator;
-    private final DuplicatesDecorator duplicatesDecorator;
     private final OrderDecorator orderDecorator;
+    private final DuplicatesDecorator duplicatesDecorator;
     private final SeverityDecorator severityDecorator;
     private final ConsolePrinter consolePrinter;
     MessageRepository messageRepository = new HashMapMessageRepository();
@@ -47,12 +47,12 @@ public class OrderedDistinctMessageService extends ValidatedService implements M
             throw new LogException(NOT_VALID_ARG_MESSAGE, e);
         }
 
-            if (duplicatesDecorator != null) {
-                duplicatesDecorator.decorate(message);
-            }
-
             if (orderDecorator != null) {
                 orderDecorator.decorate(message);
+            }
+
+            if (duplicatesDecorator != null) {
+                duplicatesDecorator.decorate(message);
             }
 
             if (severityDecorator != null) {
@@ -62,19 +62,18 @@ public class OrderedDistinctMessageService extends ValidatedService implements M
             if (consolePrinter != null) {
                 String[] decoratedMessageArray = new String[message.getBody().length];
                 for(int i = 0; i < message.getBody().length; i ++){
-//                for (String text : message.getBody()) {
                     if (message.getBody()[i] != null) {
                         String prefixMessage = pageDecorator.decorateWithPage();
-                        String finalDecoratedMessage = String.format(
-                                "[%s] %s %s (%s) %s",
-                                messageCount, currentTime, message.getBody()[i], severityMessage, prefixMessage);
+                        String decoratedMessage = String.format("%s (%s)", message.getBody()[i], severityMessage);
+                        decoratedMessageArray[i] = decoratedMessage;
 
-                        decoratedMessageArray[i] = finalDecoratedMessage;
+                        //если понадобится печатать/проверять с датой:
+                        String finalDecoratedMessage = String.format("[%s] %s %s %s",
+                                messageCount, currentTime, decoratedMessage, prefixMessage);
                     }
                 }
                 message.setBody(decoratedMessageArray);
-                final UUID primaryKey = messageRepository.create(message);
-                message.setId(primaryKey);
+                message.setId(messageRepository.create(message));
             }
             return message;
         }
@@ -93,4 +92,5 @@ public class OrderedDistinctMessageService extends ValidatedService implements M
     public Collection<Message> findBySeverity(Severity by) {
         return messageRepository.findBySeverity(by);
     }
+
 }

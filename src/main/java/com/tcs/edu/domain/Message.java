@@ -19,7 +19,6 @@ public class Message{
         this.body = body;
         this.order = order;
         this.doubling = doubling;
-        this.id = id;
     }
     public Message(MessageOrder order, Severity level, String... body){
         this(order, Doubling.DOUBLES, level, body);
@@ -35,6 +34,9 @@ public class Message{
     
     public Message(String... body){
         this(MessageOrder.ASC, Doubling.DOUBLES, Severity.MINOR, body);
+    }
+
+    public Message(MessageOrder order, Doubling doubling, String... body) { this(order, doubling, Severity.MINOR, body);
     }
 
     public Severity getLevel() {
