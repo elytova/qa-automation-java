@@ -92,5 +92,4 @@ public class OrderedDistinctMessageService extends ValidatedService implements M
     public Collection<Message> findBySeverity(Severity by) {
         return messageRepository.findBySeverity(by);
     }
-
 }

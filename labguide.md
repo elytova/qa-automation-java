@@ -171,7 +171,7 @@ Hello world!
 - [ ] Выполните из консоли запуск приложения
 ```shell
  java -classpath target/app-1.0-SNAPSHOT.jar com.tcs.edu.com.tinkoff.edu.ApplicationTest
-```
+
 
 Как проверить
 -------------

@@ -41,7 +41,7 @@ public class Message{
 
     public Message(Doubling doubling, String... body) { this(MessageOrder.ASC, doubling, Severity.MINOR, body);
     }
-
+  
     public Severity getLevel() {
         return level;
     }
