@@ -14,8 +14,8 @@ class Application {
 
         MessageService service = new OrderedDistinctMessageService(
                 new PageDecorator(),
-                new DuplicatesDecorator(),
                 new OrderDecorator(),
+                new DuplicatesDecorator(),
                 new SeverityDecorator(),
                 new ConsolePrinter()
         );
