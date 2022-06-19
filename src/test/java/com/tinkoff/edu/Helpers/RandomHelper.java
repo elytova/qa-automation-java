@@ -1,6 +1,8 @@
 package com.tinkoff.edu.Helpers;
 
-public class RandomStringHelper {
+import java.util.Random;
+
+public class RandomHelper {
     public static String randomAlphabetString(int size) {
         String AlphabetString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "abcdefghijklmnopqrstuvxyz";
         StringBuilder sb = new StringBuilder(size);
@@ -9,5 +11,10 @@ public class RandomStringHelper {
             sb.append(AlphabetString.charAt(index));
         }
         return sb.toString();
+    }
+
+    public static int randomNumeric(int size) {
+        Random randI = new Random();
+        return randI.ints(1, 1000).findAny().getAsInt();
     }
 }
