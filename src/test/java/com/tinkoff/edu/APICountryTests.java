@@ -3,18 +3,19 @@ package com.tinkoff.edu;
 import io.restassured.RestAssured;
 import io.restassured.authentication.PreemptiveBasicAuthScheme;
 import io.restassured.http.ContentType;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
-import static com.tinkoff.edu.Helpers.RandomStringHelper.*;
+import java.sql.*;
+
+import static com.tinkoff.edu.Helpers.RandomHelper.*;
 import static io.restassured.RestAssured.*;
-import static org.hamcrest.Matchers.*;
 
 public class APICountryTests {
 
     final String METHOD_WITH_ID = "/api/countries/{id}";
     final String METHOD_WITHOUT_ID = "/api/countries";
+    final static String TEST_COUNTRY_NAME = randomAlphabetString(2);
+    private static Connection connection;
 
     @BeforeAll
     public static void setUpAuth() {
@@ -22,30 +23,50 @@ public class APICountryTests {
         authScheme.setUserName("admin");
         authScheme.setPassword("admin");
         RestAssured.authentication = authScheme;
+        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 
     @BeforeAll
-    public static void setUpErrorLogging() {
-        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+    public static void connectDb() throws SQLException {
+        connection = DriverManager.getConnection(
+                "jdbc:postgresql://localhost/app-db",
+                "app-db-admin",
+                "P@ssw0rd"
+        );
+    }
+
+    @BeforeEach
+    public void createDataInDB() throws SQLException {
+        PreparedStatement sql = connection.prepareStatement(
+                "INSERT INTO COUNTRY(COUNTRY_NAME) VALUES(?)",
+                Statement.RETURN_GENERATED_KEYS);
+        sql.setString(1, TEST_COUNTRY_NAME);
+        sql.executeUpdate();
+    }
+
+    public int getCountryId() throws SQLException {
+        int[] COUNTRY_ID = new int[1];
+        PreparedStatement sql = connection
+                        .prepareStatement("SELECT ID FROM COUNTRY WHERE COUNTRY_NAME=?");
+        sql.setString(1, TEST_COUNTRY_NAME);
+        ResultSet resultSet = sql.executeQuery();
+        while (resultSet.next()) { COUNTRY_ID[0] = resultSet.getInt(1);}
+        return COUNTRY_ID[0];
     }
 
     @Test
     @DisplayName("Проверка на добавление новой уникальной страны")
     public void addNewUniqueCountry(){
-        String newRandomCountry = randomAlphabetString(2);
         given()
                 .contentType(ContentType.JSON)
                 .body("{\n" +
-                        "  \"countryName\": \""+newRandomCountry+"\"\n" +
+                        "  \"countryName.equals\": \""+ TEST_COUNTRY_NAME +"\"\n" +
                         "}")
                 .when()
-                .post(METHOD_WITHOUT_ID)
+                .get(METHOD_WITHOUT_ID)
                 .then()
                 //201 - "created"
-                .statusCode(201)
-                .body("id", not(empty()),
-                        "countryName", is(newRandomCountry)
-                );
+                .statusCode(200);
     }
 
     @Test
@@ -65,33 +86,44 @@ public class APICountryTests {
 
     @Test
     @DisplayName("Проверка на изменение существующей страны")
-    public void changeCountryWhenItExists(){
-        String testCountry = get("/api/countries").then().extract().response().path("id[0]").toString();
-        String newRandomCountry = randomAlphabetString(2);
+    public void changeCountryWhenItExists() throws SQLException {
+        System.out.println(getCountryId());
         given()
                 .contentType(ContentType.JSON)
-                .pathParam("id", testCountry)
+                .pathParam("id", getCountryId())
                 .body("{\n" +
-                        "  \"id\": \""+testCountry+"\",\n" +
-                        "  \"countryName\": \""+newRandomCountry+"\"\n" +
+                        "  \"id\": \""+ getCountryId() +"\",\n" +
+                        "  \"countryName\": \""+ randomAlphabetString(2) +"\"\n" +
                         "}")
                 .when()
                 .put(METHOD_WITH_ID)
                 .then()
-//                .root("find {it.type.name == '%s'}.status")
                 .statusCode(200);
     }
 
     @Test
     @DisplayName("Проверка на удаление существующей страны")
-    public void deleteCountryWhenItExists(){
-        String testCountry = get("/api/countries").then().extract().response().path("id[0]").toString();
+    public void deleteCountryWhenItExists() throws SQLException {
         given()
                 .contentType(ContentType.JSON)
-                .pathParam("id", testCountry)
+                .pathParam("id", getCountryId())
                 .when()
                 .delete(METHOD_WITH_ID)
                 .then()
                 .statusCode(204);
+    }
+
+    @AfterEach
+    public void deleteDataFromDB() throws SQLException {
+        PreparedStatement sql = connection.prepareStatement(
+                "DELETE FROM COUNTRY WHERE COUNTRY_NAME=? OR ID=?");
+        sql.setString(1, TEST_COUNTRY_NAME);
+        sql.setInt(2, getCountryId());
+        sql.executeUpdate();
+    }
+
+    @AfterAll
+    static void closeDBConnection() throws SQLException{
+        connection.close();
     }
 }

@@ -1,6 +1,6 @@
 package com.tinkoff.edu.Helpers;
 
-public class RandomStringHelper {
+public class RandomHelper {
     public static String randomAlphabetString(int size) {
         String AlphabetString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "abcdefghijklmnopqrstuvxyz";
         StringBuilder sb = new StringBuilder(size);
