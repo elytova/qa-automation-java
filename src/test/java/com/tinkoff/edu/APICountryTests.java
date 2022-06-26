@@ -5,10 +5,7 @@ import io.restassured.authentication.PreemptiveBasicAuthScheme;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.*;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 
 import static com.tinkoff.edu.Helpers.RandomHelper.*;
 import static io.restassured.RestAssured.*;
@@ -18,7 +15,6 @@ public class APICountryTests {
     final String METHOD_WITH_ID = "/api/countries/{id}";
     final String METHOD_WITHOUT_ID = "/api/countries";
     final static String TEST_COUNTRY_NAME = randomAlphabetString(2);
-    final static int TEST_COUNTRY_ID = randomNumeric(3);
     private static Connection connection;
 
     @BeforeAll
@@ -42,11 +38,20 @@ public class APICountryTests {
     @BeforeEach
     public void createDataInDB() throws SQLException {
         PreparedStatement sql = connection.prepareStatement(
-                "INSERT INTO COUNTRY(id, country_name) VALUES(?,?)"
-        );
-        sql.setInt(1, TEST_COUNTRY_ID);
-        sql.setString(2, TEST_COUNTRY_NAME);
+                "INSERT INTO COUNTRY(COUNTRY_NAME) VALUES(?)",
+                Statement.RETURN_GENERATED_KEYS);
+        sql.setString(1, TEST_COUNTRY_NAME);
         sql.executeUpdate();
+    }
+
+    public int getCountryId() throws SQLException {
+        int[] COUNTRY_ID = new int[1];
+        PreparedStatement sql = connection
+                        .prepareStatement("SELECT ID FROM COUNTRY WHERE COUNTRY_NAME=?");
+        sql.setString(1, TEST_COUNTRY_NAME);
+        ResultSet resultSet = sql.executeQuery();
+        while (resultSet.next()) { COUNTRY_ID[0] = resultSet.getInt(1);}
+        return COUNTRY_ID[0];
     }
 
     @Test
@@ -81,12 +86,13 @@ public class APICountryTests {
 
     @Test
     @DisplayName("Проверка на изменение существующей страны")
-    public void changeCountryWhenItExists(){
+    public void changeCountryWhenItExists() throws SQLException {
+        System.out.println(getCountryId());
         given()
                 .contentType(ContentType.JSON)
-                .pathParam("id", TEST_COUNTRY_ID)
+                .pathParam("id", getCountryId())
                 .body("{\n" +
-                        "  \"id\": \""+ TEST_COUNTRY_ID +"\",\n" +
+                        "  \"id\": \""+ getCountryId() +"\",\n" +
                         "  \"countryName\": \""+ randomAlphabetString(2) +"\"\n" +
                         "}")
                 .when()
@@ -97,10 +103,10 @@ public class APICountryTests {
 
     @Test
     @DisplayName("Проверка на удаление существующей страны")
-    public void deleteCountryWhenItExists(){
+    public void deleteCountryWhenItExists() throws SQLException {
         given()
                 .contentType(ContentType.JSON)
-                .pathParam("id", TEST_COUNTRY_ID)
+                .pathParam("id", getCountryId())
                 .when()
                 .delete(METHOD_WITH_ID)
                 .then()
@@ -110,10 +116,9 @@ public class APICountryTests {
     @AfterEach
     public void deleteDataFromDB() throws SQLException {
         PreparedStatement sql = connection.prepareStatement(
-                "DELETE FROM COUNTRY WHERE COUNTRY_NAME=? OR ID=?"
-        );
+                "DELETE FROM COUNTRY WHERE COUNTRY_NAME=? OR ID=?");
         sql.setString(1, TEST_COUNTRY_NAME);
-        sql.setInt(2, TEST_COUNTRY_ID);
+        sql.setInt(2, getCountryId());
         sql.executeUpdate();
     }
 
